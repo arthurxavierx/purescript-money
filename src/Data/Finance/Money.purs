@@ -11,20 +11,23 @@ module Data.Finance.Money
   , fromDense
   ) where
 
+import Prelude
+
 import Data.Finance.Currency (kind Currency, class Currency, CProxy(..))
 import Data.Finance.Currency as Currency
 import Data.Finance.Money.Format (Format, FormatF(..), absolute, ifNegative, literal)
 import Data.Foldable (foldMap)
-import Data.Generic (class Generic, gShow)
+import Data.Generic.Rep (class Generic)
+import Data.Generic.Rep.Show (genericShow)
 import Data.Int as Int
 import Data.Module (class LeftModule, class RightModule)
 import Data.Newtype (class Newtype)
 import Data.Ord (abs)
+import Data.Ratio (Ratio)
 import Data.Rational (Rational, (%))
 import Data.Rational as Rational
 import Global.Unsafe (unsafeToFixed)
 import Math (pow)
-import Prelude
 
 --------------------------------------------------------------------------------
 
@@ -35,9 +38,9 @@ import Prelude
 newtype Discrete (c :: Currency) = Discrete Int
 derive newtype instance eqDiscrete  :: Eq (Discrete c)
 derive newtype instance ordDiscrete :: Ord (Discrete c)
-derive instance genericDiscrete     :: Generic (Discrete c)
+derive instance genericDiscrete     :: Generic (Discrete c) _
 derive instance newtypeDiscrete     :: Newtype (Discrete c) _
-instance showDiscreteInstance :: Show (Discrete c) where show = gShow
+instance showDiscreteInstance :: Show (Discrete c) where show = genericShow
 
 instance leftModuleDiscrete :: LeftModule (Discrete c) Int where
   mzeroL = Discrete 0
@@ -87,13 +90,13 @@ derive instance newtypeDense     :: Newtype (Dense c) _
 instance showDense :: Show (Dense c) where
   show (Dense r) = "(Dense " <> show r <> ")"
 
-instance leftModuleDense :: LeftModule (Dense c) Rational where
+instance leftModuleDense :: LeftModule (Dense c) (Ratio Int) where
   mzeroL = Dense zero
   maddL (Dense a) (Dense b) = Dense (a + b)
   msubL (Dense a) (Dense b) = Dense (a - b)
   mmulL a         (Dense b) = Dense (a * b)
 
-instance rightModuleDense :: RightModule (Dense c) Rational where
+instance rightModuleDense :: RightModule (Dense c) (Ratio Int) where
   mzeroR = Dense zero
   maddR (Dense a) (Dense b) = Dense (a + b)
   msubR (Dense a) (Dense b) = Dense (a - b)

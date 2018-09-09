@@ -71,32 +71,29 @@ numeric = ifNegative (literal minus) <> absolute
 -- | Numeric format, with a minus sign for negative amounts, and a currency
 -- | code.
 numericC :: Format
-numericC = do
+numericC =
   ifNegative $ literal minus
-  currencyCode
-  literal space
-  absolute
-  where bind = sbind
+  <> currencyCode
+  <> literal space
+  <> absolute
 
 -- | Accountant format, with negative amounts parenthesized, and no currency
 -- | indicator.
 accountant :: Format
-accountant = do
-  ifNegative $ literal "("
-  absolute
-  ifNegative $ literal ")"
-  where bind = sbind
+accountant =
+  ifNegative (literal "(")
+  <> absolute
+  <> ifNegative (literal ")")
 
 -- | Accountant format, with negative amounts parenthesized, and a currency
 -- | code.
 accountantC :: Format
-accountantC = do
-  ifNegative $ literal "("
-  currencyCode
-  literal space
-  absolute
-  ifNegative $ literal ")"
-  where bind = sbind
+accountantC =
+  ifNegative (literal "(")
+  <> currencyCode
+  <> literal space
+  <> absolute
+  <> ifNegative (literal ")")
 
 --------------------------------------------------------------------------------
 

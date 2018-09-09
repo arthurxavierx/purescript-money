@@ -2,12 +2,13 @@ module Test.Data.Finance.Money
   ( main
   ) where
 
+import Prelude
+
 import Data.Finance.Currency (GBP, JPY)
 import Data.Finance.Money (Dense(..), Discrete(..), Rounding(..), fromDense, fromDiscrete, formatDense, formatDiscrete)
 import Data.Finance.Money.Format (numeric)
 import Data.Rational ((%))
-import Prelude
-import Test.Unit (suite, test)
+import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
 
 type IGBP = Discrete GBP
@@ -16,6 +17,7 @@ type IJPY = Discrete JPY
 type EGBP = Dense GBP
 type EJPY = Dense JPY
 
+main :: TestSuite
 main = suite "Date.Finance.Money" do
   test "formatDiscrete" do
     let gbp s n = Assert.equal s $ formatDiscrete numeric (Discrete n :: IGBP)
